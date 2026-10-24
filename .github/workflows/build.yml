@@ -16,15 +16,18 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Android Environment
+        run: |
+          echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
+          yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
+          gradle-version: '8.2'
           cache-disabled: true
 
-      - name: Build APK with Gradle
+      - name: Build APK
         run: gradle assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
@@ -32,4 +35,3 @@ jobs:
         with:
           name: NexoStream-v1.0.0-APK
           path: app/build/outputs/apk/debug/*.apk
-          
